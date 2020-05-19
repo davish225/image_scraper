@@ -1,5 +1,3 @@
-# https://imgur.com/gallery/aPjMhcR
-
 from bs4 import BeautifulSoup
 import requests
 import configparser
@@ -86,13 +84,16 @@ def directory_population():
         if files.endswith('.jpg'):
 
             if files in destination_list:
-                print("error")
-                os.rename(files,files[:-4]+"-"+str(duplicate)+".jpg")
+                new_name = files[:-4]+"-"+str(duplicate)+".jpg"
                 duplicate += 1
-
-                shutil.move(os.path.join(source_path, files), os.path.join(destination_path, files))
+                os.rename(files, os.path.join(destination_path, new_name))
             else:
                 shutil.move(os.path.join(source_path, files), os.path.join(destination_path, files))
 
-image_download()
-directory_population()
+
+def main():
+    image_download()
+    directory_population()
+
+
+main()
