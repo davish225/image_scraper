@@ -1,17 +1,11 @@
 # https://imgur.com/gallery/aPjMhcR
 
-# scrape name from link to get name for new directory [x]
-# create directory in the same place code is run [x]
-# allow path to specified if not the current one [x]
-# automate downloading of images on a page []
-
 from bs4 import BeautifulSoup
 import requests
 import configparser
 from imgurpython import ImgurClient
 import urllib
 import os
-import stat
 import shutil
 
 
@@ -26,24 +20,32 @@ title = page.title.text.strip()
 
 def path_creation():
     directory_choice = input("Would you like to use the current directory? Y/N: ")
+    directories = os.listdir()
     if directory_choice.lower() == "y":
-        new_directory = os.getcwd() + "\\" + title
-        try:
-            os.mkdir(new_directory)
 
-        except OSError:
-            print("unable to create directory with web page's name")
+        new_directory = os.getcwd() + "\\" + title
+
+        if os.path.isdir(new_directory):
+                return new_directory
         else:
-            return new_directory
+            try:
+                os.mkdir(new_directory)
+            except OSError:
+                print("unable to create directory with web page's name")
+            else:
+                return new_directory
     elif directory_choice.lower() == "n":
         path = input("Please input a new absolute path to the directory you want the folder created in.")
         new_directory = path + "\\" + title
-        try:
-            os.mkdir(new_directory)
-        except OSError:
-            print("unable to create directory with web page's name")
-        else:
+        if new_directory in directories:
             return new_directory
+        else:
+            try:
+                os.mkdir(new_directory)
+            except OSError:
+                print("unable to create directory with web page's name")
+            else:
+                return new_directory
 
 def image_retrieval():
     '''
@@ -73,13 +75,24 @@ def image_download():
 
 
 def directory_population():
-    x = os.listdir()
+    duplicate = 1
     source_path = os.getcwd()
-    destination_path = path_creation()
+    directory_list = os.listdir(source_path)
 
-    for files in x:
+    destination_path = path_creation()
+    destination_list = os.listdir(destination_path)
+
+    for files in directory_list:
         if files.endswith('.jpg'):
-            shutil.move(os.path.join(source_path, files), os.path.join(destination_path, files))
+
+            if files in destination_list:
+                print("error")
+                os.rename(files,files[:-4]+"-"+str(duplicate)+".jpg")
+                duplicate += 1
+
+                shutil.move(os.path.join(source_path, files), os.path.join(destination_path, files))
+            else:
+                shutil.move(os.path.join(source_path, files), os.path.join(destination_path, files))
 
 image_download()
 directory_population()
