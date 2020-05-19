@@ -12,6 +12,7 @@ from imgurpython import ImgurClient
 import urllib
 import os
 import stat
+import shutil
 
 
 url = "https://imgur.com/gallery/OToFZd4"
@@ -27,27 +28,22 @@ def path_creation():
     directory_choice = input("Would you like to use the current directory? Y/N: ")
     if directory_choice.lower() == "y":
         new_directory = os.getcwd() + "\\" + title
-        #if os.path.isdir(new_directory) == True:
         try:
-            os.mkdir(new_directory, stat.S_IWRITE)
+            os.mkdir(new_directory)
 
         except OSError:
             print("unable to create directory with web page's name")
         else:
-            print("success")
+            return new_directory
     elif directory_choice.lower() == "n":
         path = input("Please input a new absolute path to the directory you want the folder created in.")
         new_directory = path + "\\" + title
         try:
-            os.mkdir(new_directory, stat.S_IWRITE)
+            os.mkdir(new_directory)
         except OSError:
             print("unable to create directory with web page's name")
         else:
-            print("success")
-        # else:
-        #     print("error")
-    os.chmod(new_directory, stat.S_IRWXO)
-    return new_directory
+            return new_directory
 
 def image_retrieval():
     '''
@@ -70,11 +66,20 @@ def image_retrieval():
     return image_urls
 
 
-# def image_download():
-#     urls = image_retrieval()
-#     for image in urls:
-#         urllib.request.urlretrieve(image, image[-7:])
+def image_download():
+    urls = image_retrieval()
+    for image in urls[:1]:
+        urllib.request.urlretrieve(image, image[-7:])
 
 
+def directory_population():
+    x = os.listdir()
+    source_path = os.getcwd()
+    destination_path = path_creation()
 
+    for files in x:
+        if files.endswith('.jpg'):
+            shutil.move(os.path.join(source_path, files), os.path.join(destination_path, files))
 
+image_download()
+directory_population()
