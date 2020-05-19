@@ -45,6 +45,7 @@ def path_creation():
             else:
                 return new_directory
 
+
 def image_retrieval():
     '''
     Uses the Imgur API to retrieve the links of all the images in an album on a page
