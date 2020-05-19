@@ -7,34 +7,45 @@
 
 from bs4 import BeautifulSoup
 import requests
+import imgurpython
 import os
-
+url = "https://imgur.com/gallery/OToFZd4"
 # get url information using requests using http requests
-request = requests.get("https://imgur.com/gallery/OToFZd4")
+request = requests.get(url)
 
 page = BeautifulSoup(request.text, features="html.parser")
 # title created by formatting and removing all spaces
-title = " ".join(page.title.text.split())
+title = page.title.text.strip()
 
-directory_choice = input("Would you like to use the current directory? Y/N")
+#
+# def path_creation():
+#     directory_choice = input("Would you like to use the current directory? Y/N: ")
+#     if directory_choice.lower() == "y":
+#         new_directory = os.getcwd() + "/" + title
+#         try:
+#             os.mkdir(new_directory)
+#         except OSError:
+#             print("unable to create directory with web page's name")
+#         else:
+#             print("success")
+#     elif directory_choice.lower() == "n":
+#         path = input("Please input a new absolute path to the directory you want the folder created in.")
+#         new_directory = path + "/" + title
+#         try:
+#             os.mkdir(new_directory)
+#         except OSError:
+#             print("unable to create directory with web page's name")
+#         else:
+#             print("success")
 
-if directory_choice.lower == "y":
-    new_directory = os.getcwd() + "/" + title
-    try:
-        os.mkdir(new_directory)
-    except OSError:
-        print("unable to create directory with web page's name")
-    else:
-        print("success")
-elif directory_choice.lower == "n":
-    path = input("Please input a new absolute path to the directory you want the folder created in.")
-    new_directory = path + "/" + title
-    try:
-        os.mkdir(new_directory)
-    except OSError:
-        print("unable to create directory with web page's name")
-    else:
-        print("success")
-else:
-    print("Please input a valid choice")
+def image_filter():
+    # pages = BeautifulSoup(request.content, features="html.parser")
+    # images = pages.select('[rel=image_src]')[0]['href']
+    # print(images)
+    #
+    # for image in pages.select('[rel=image_src]'):
+    #     print(image)
 
+
+
+image_filter()
